@@ -8,7 +8,7 @@ redirect_from:
 ---
 
 
-Hi there! I am Yuqian Gui (桂雨谦), currently a first-year PhD student in the Department of Astronomy at Tsinghua University. You can find ![my CV here](https://github.com/yq-gui/yuqian-gui.github.io)
+Hi there! I am Yuqian Gui (桂雨谦), currently a first-year PhD student in the Department of Astronomy at Tsinghua University. You can find ![my CV here](https://github.com/yq-gui/yq-gui.github.io/files/CV.pdf)
 
 My recent research is how does the evolution of galaxies associated with their merger histories and large-scale structure environments. Currently I am working on understanding episodic star formation histories of SF galaxies, and trying to figure out the origin of the diversity of their properties.
 
