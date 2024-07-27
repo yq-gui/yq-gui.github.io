@@ -7,11 +7,11 @@
 # server process.
 
 # Basic Site Settings
-locale                   : "zh-CN" # "en-US"
-title                    : "Yuqian Gui"
+locale                   : "en-US" # "zh-CN"
+title                    : "Yuqian Gui's Website"
 title_separator          : "-"
 name                     : &name "Yuqian Gui"
-description              : &description "personal description"
+description              : &description "Cosmology - Astrophysics @ THU"
 url                      : https://yq-gui.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
 repository               : "yq-gui/yq-gui.github.io"
