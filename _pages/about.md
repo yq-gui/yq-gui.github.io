@@ -8,7 +8,7 @@ redirect_from:
 ---
 
 
-Hi there! I am Yuqian Gui (桂雨谦), currently a **first-year PhD** student in the [Department of Astronomy](https://astro.tsinghua.edu.cn) at Tsinghua University. I received my B.S. in Physics in Zhili College, Tsinghua University in June, 2024. You can find [my CV here](/files/CV.pdf).
+Hi there! I am Yuqian Gui (桂雨谦), currently a first-year PhD student in the [Department of Astronomy](https://astro.tsinghua.edu.cn) at Tsinghua University. I received my B.S. in Physics in Zhili College, Tsinghua University in June, 2024.
 
 My current research interest is how does the **evolution of galaxies** associated with **their merger histories and large-scale structure environments**.
 
@@ -27,4 +27,4 @@ Hobbies and Personal Life
 
 For more info
 ------
-More info about [me](/files/CV.pdf).
+If you want more information about me, you can find [my CV here](/files/CV.pdf).
