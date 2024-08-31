@@ -23,8 +23,8 @@ Hobbies and Personal Life
 <!-- ====== -->
 * I enjoy photography and music, and quite like singing.
 * **Running and swimming** are two of my main ways to exercise and keep healthy.
-* I'm **very glad** to meet and chat with everyone around me. ^ ^
+* I'm **very glad** to meet and chat with everyone around me. ^^
 
 For more info
 ------
-If you want more information about me, you can find [my CV here](/files/CV.pdf).
+If you want more information about me, you can find [my CV here](/files/Personal_CV_gyq.pdf).
