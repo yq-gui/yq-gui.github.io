@@ -14,7 +14,10 @@ main:
         
   #- title: "Blog Posts"
   #  url: /year-archive/
-    
+
+  - title: "Project"
+    url: /project/cosmocalc.html
+  
   - title: "CV"
     url: /files/Personal_CV_gyq.pdf
     

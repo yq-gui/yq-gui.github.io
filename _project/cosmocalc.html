@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmology Calculator</title>
+    <!-- 引入 Tailwind CSS 进行快速美化 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 简单的自定义样式确保在不同设备上显示良好 */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen p-4 md:p-8 text-slate-800">
+
+    <div class="max-w-4xl mx-auto">
+        <!-- 头部 -->
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">Cosmology Calculator</h1>
+            <p class="text-slate-500">Flat Universe Model (基于平坦宇宙模型)</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- 输入区域 -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="text-xl font-semibold mb-4 text-indigo-600 border-b pb-2">Input Parameters (输入参数)</h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Hubble Constant, H₀ (km/s/Mpc)</label>
+                        <input type="number" id="h0" value="67.4" step="0.1" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+                        <p class="text-xs text-slate-400 mt-1">Default: Planck 2018 (67.4)</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Matter Density, Ω_m</label>
+                        <input type="number" id="omega_m" value="0.315" step="0.001" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+                        <p class="text-xs text-slate-400 mt-1">Default: Planck 2018 (0.315). Assumes Ω_Λ = 1 - Ω_m.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Redshift, z</label>
+                        <input type="number" id="redshift" value="1.0" step="0.1" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+                    </div>
+
+                    <button onclick="calculateCosmology()" class="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg transition-colors shadow-sm">
+                        Calculate (计算)
+                    </button>
+                </div>
+            </div>
+
+            <!-- 结果输出区域 -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="text-xl font-semibold mb-4 text-emerald-600 border-b pb-2">Results (计算结果)</h2>
+                
+                <div class="space-y-4" id="results">
+                    <!-- 结果将通过 JS 插入到这里 -->
+                    <div class="text-slate-500 text-center py-8">Click calculate to see results...</div>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="mt-12 text-center text-sm text-slate-400">
+            <p>Powered by JavaScript & Numerical Integration.</p>
+        </footer>
+    </div>
+
+    <!-- 宇宙学计算逻辑 -->
+    <script>
+        // 物理常数
+        const c = 299792.458; // 光速 km/s
+        const MpcToKm = 3.085677581e19;
+        const secToYr = 31557600; // 一年的秒数
+        // 1 / H0 转换为 Gyr (十亿年) 的系数
+        const TH_COEFF = 9.777922216; // 当 H0 用 100 km/s/Mpc 时的哈勃时间 (Gyr)
+
+        // 辛普森数值积分法则 (Simpson's 1/3 Rule)
+        function integrate(func, a, b, n = 1000) {
+            if (n % 2 !== 0) n++; // 确保步数是偶数
+            let h = (b - a) / n;
+            let sum = func(a) + func(b);
+            
+            for (let i = 1; i < n; i += 2) {
+                sum += 4 * func(a + i * h);
+            }
+            for (let i = 2; i < n - 1; i += 2) {
+                sum += 2 * func(a + i * h);
+            }
+            
+            return (h / 3) * sum;
+        }
+
+        // 核心执行函数
+        function calculateCosmology() {
+            // 1. 获取输入值
+            const H0 = parseFloat(document.getElementById('h0').value);
+            const Om = parseFloat(document.getElementById('omega_m').value);
+            const z = parseFloat(document.getElementById('redshift').value);
+
+            if (isNaN(H0) || isNaN(Om) || isNaN(z) || H0 <= 0 || z < 0) {
+                alert("请输入有效的正数参数。");
+                return;
+            }
+
+            // 辐射密度 (包含光子和中微子，基于 H0)
+            const h = H0 / 100;
+            const Or = 4.165e-5 / (h * h);
+            
+            // 假设平坦宇宙 (Flat Universe)
+            const Ol = 1 - Om - Or; 
+
+            // 哈勃参数 E(z)
+            const E = (z_val) => Math.sqrt(Or * Math.pow(1 + z_val, 4) + Om * Math.pow(1 + z_val, 3) + Ol);
+
+            // 距离积分函数 f(z) = 1 / E(z)
+            const distIntegrand = (z_val) => 1 / E(z_val);
+            
+            // 时间积分函数 g(z) = 1 / ((1+z) * E(z))
+            const timeIntegrand = (z_val) => 1 / ((1 + z_val) * E(z_val));
+
+            // 2. 距离计算
+            const DH = c / H0; // 哈勃距离 (Mpc)
+            
+            // 共动视线距离 DC (Mpc) (对于平坦宇宙，DC = 横向共动距离 DM)
+            const DC = DH * integrate(distIntegrand, 0, z);
+            const DM = DC; 
+
+            // 角直径距离 DA (Mpc)
+            const DA = DM / (1 + z);
+
+            // 光度距离 DL (Mpc)
+            const DL = DM * (1 + z);
+
+            // 3. 时间计算
+            const tH = TH_COEFF * (100 / H0); // 哈勃时间 (Gyr)
+
+            // Lookback time (从 z=0 回望到 z 的时间)
+            const tL = tH * integrate(timeIntegrand, 0, z);
+
+            // 宇宙总年龄 (积分从 0 到无穷大，这里用 10000 近似无穷大)
+            const ageTotal = tH * integrate(timeIntegrand, 0, 10000);
+            
+            // 在红移 z 时的宇宙年龄
+            const ageAtZ = ageTotal - tL;
+
+            // 4. 尺度计算 (kpc / arcsec)
+            // 1 radian = 206264.806 arcsec
+            const scale = (DA * 1000) / 206264.806;
+
+            // 5. 渲染结果
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <div class="flex justify-between items-center py-2 border-b border-slate-100">
+                    <span class="text-slate-600 font-medium">Universe Age at z (宇宙年龄)</span>
+                    <span class="text-slate-900 font-bold">${ageAtZ.toFixed(3)} <span class="text-sm font-normal text-slate-500">Gyr</span></span>
+                </div>
+                <div class="flex justify-between items-center py-2 border-b border-slate-100">
+                    <span class="text-slate-600 font-medium">Lookback Time (回望时间)</span>
+                    <span class="text-slate-900 font-bold">${tL.toFixed(3)} <span class="text-sm font-normal text-slate-500">Gyr</span></span>
+                </div>
+                <div class="flex justify-between items-center py-2 border-b border-slate-100">
+                    <span class="text-slate-600 font-medium">Angular Diameter Distance (D_A)</span>
+                    <span class="text-slate-900 font-bold">${DA.toFixed(2)} <span class="text-sm font-normal text-slate-500">Mpc</span></span>
+                </div>
+                <div class="flex justify-between items-center py-2 border-b border-slate-100">
+                    <span class="text-slate-600 font-medium">Luminosity Distance (D_L)</span>
+                    <span class="text-slate-900 font-bold">${DL.toFixed(2)} <span class="text-sm font-normal text-slate-500">Mpc</span></span>
+                </div>
+                <div class="flex justify-between items-center py-2">
+                    <span class="text-slate-600 font-medium">Scale (物理尺度)</span>
+                    <span class="text-slate-900 font-bold">${scale.toFixed(3)} <span class="text-sm font-normal text-slate-500">kpc/arcsec</span></span>
+                </div>
+            `;
+        }
+
+        // 初始化时自动计算一次
+        window.onload = calculateCosmology;
+    </script>
+</body>
+</html>
