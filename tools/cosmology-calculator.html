@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cosmology Calculator · Yuqian Gui</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════
+       DESIGN SYSTEM
+    ═══════════════════════════════════════ */
+    :root {
+      --bg:         #0b0d12;
+      --bg2:        #111420;
+      --bg3:        #181c2a;
+      --border:     #232844;
+      --border2:    #2e3555;
+      --text:       #d8dff0;
+      --text-dim:   #7a85a8;
+      --text-xdim:  #3d4566;
+      --accent:     #4f9ef8;
+      --accent2:    #38d9a9;
+      --accent3:    #f7c95c;
+      --accent-glow:rgba(79,158,248,0.18);
+      --red:        #f06a6a;
+      --mono:       'Space Mono', monospace;
+      --serif:      'Libre Baskerville', serif;
+      --sans:       'DM Sans', sans-serif;
+      --radius:     10px;
+      --radius-lg:  16px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Stars background ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 42% 8%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 73% 35%, rgba(255,255,255,0.35) 0%, transparent 100%),
+        radial-gradient(1px 1px at 91% 12%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 5% 68%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 58% 82%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 28% 94%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 81% 67%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 35% 54%, rgba(255,255,255,0.25) 0%, transparent 100%),
+        radial-gradient(1px 1px at 64% 48%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 8%  42%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 49% 28%, rgba(200,220,255,0.7) 0%, transparent 100%),
+        radial-gradient(1px 1px at 88% 88%, rgba(255,255,255,0.3) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Layout wrapper ── */
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+    }
+
+    /* ═══════════════════════════════════════
+       HEADER
+    ═══════════════════════════════════════ */
+    header {
+      padding: 3rem 0 2.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2.5rem;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .breadcrumb {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+    }
+
+    .breadcrumb a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .header-badge {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      background: rgba(56,217,169,0.1);
+      border: 1px solid rgba(56,217,169,0.25);
+      padding: 4px 12px;
+      border-radius: 20px;
+      white-space: nowrap;
+      margin-top: 4px;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
+      line-height: 1.15;
+      margin-bottom: 0.6rem;
+    }
+
+    .header-sub {
+      color: var(--text-dim);
+      font-size: 0.92rem;
+      max-width: 540px;
+      line-height: 1.65;
+    }
+
+    /* ═══════════════════════════════════════
+       MAIN GRID
+    ═══════════════════════════════════════ */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.45fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 700px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ═══════════════════════════════════════
+       PANELS
+    ═══════════════════════════════════════ */
+    .panel {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 1rem 1.4rem 0.8rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .panel-head-icon {
+      font-size: 1rem;
+      opacity: 0.8;
+    }
+
+    .panel-head h2 {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .panel-body {
+      padding: 1.3rem 1.4rem;
+    }
+
+    /* ═══════════════════════════════════════
+       INPUTS
+    ═══════════════════════════════════════ */
+    .field-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .field-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.4rem;
+    }
+
+    .field-label label {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      letter-spacing: 0.03em;
+    }
+
+    .field-label .field-unit {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--text-xdim);
+    }
+
+    input[type="number"] {
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      padding: 0.55rem 0.9rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      appearance: textfield;
+      -moz-appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+    input[type="number"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    input[type="number"].input-z {
+      font-size: 1.4rem;
+      padding: 0.7rem 1rem;
+      border-color: var(--accent);
+      text-align: center;
+      color: #fff;
+      letter-spacing: 0.05em;
+    }
+
+    input[type="number"].input-z:focus {
+      box-shadow: 0 0 0 4px var(--accent-glow), 0 0 20px var(--accent-glow);
+    }
+
+    /* divider */
+    .param-divider {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-xdim);
+      margin: 1.4rem 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .param-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* reset link */
+    .reset-link {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--text-xdim);
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      background: none;
+      border: none;
+      padding: 0;
+      letter-spacing: 0.04em;
+    }
+    .reset-link:hover { color: var(--accent3); }
+
+    .params-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.4rem;
+    }
+
+    /* calculate button */
+    .btn-calc {
+      width: 100%;
+      margin-top: 1.4rem;
+      padding: 0.85rem;
+      background: linear-gradient(135deg, #1c4fa0 0%, #2563c7 50%, #1a8fc4 100%);
+      border: none;
+      border-radius: var(--radius);
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 16px rgba(37,99,199,0.3);
+    }
+    .btn-calc:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(37,99,199,0.45);
+    }
+    .btn-calc:active { transform: translateY(0); }
+
+    /* ═══════════════════════════════════════
+       RESULTS
+    ═══════════════════════════════════════ */
+    .results-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .result-section {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .result-section-head {
+      padding: 0.75rem 1.2rem;
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .result-section-head h3 {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .result-section-icon {
+      font-size: 0.9rem;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .result-table tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    .result-table tr:last-child { border-bottom: none; }
+    .result-table tr:hover { background: rgba(79,158,248,0.04); }
+
+    .result-table td {
+      padding: 0.62rem 1.2rem;
+      vertical-align: middle;
+    }
+
+    .result-table td:first-child {
+      color: var(--text-dim);
+      font-size: 0.83rem;
+      width: 60%;
+    }
+
+    .result-table td:last-child {
+      font-family: var(--mono);
+      font-size: 0.88rem;
+      color: var(--accent2);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .result-table td .res-unit {
+      font-size: 0.72rem;
+      color: var(--text-xdim);
+      margin-left: 4px;
+    }
+
+    .result-table td .res-placeholder {
+      color: var(--text-xdim);
+      font-style: italic;
+      font-family: var(--sans);
+      font-size: 0.8rem;
+    }
+
+    /* ═══════════════════════════════════════
+       REDSHIFT INDICATOR STRIP
+    ═══════════════════════════════════════ */
+    .z-strip {
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      padding: 0.7rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.2rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .z-strip-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--text-xdim);
+      text-transform: uppercase;
+    }
+
+    .z-strip-value {
+      font-family: var(--mono);
+      font-size: 1.1rem;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .z-strip-epoch {
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+
+    /* ═══════════════════════════════════════
+       ERROR STATE
+    ═══════════════════════════════════════ */
+    .error-msg {
+      background: rgba(240,106,106,0.1);
+      border: 1px solid rgba(240,106,106,0.3);
+      border-radius: var(--radius);
+      padding: 0.7rem 1rem;
+      color: var(--red);
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      display: none;
+      margin-top: 0.8rem;
+    }
+
+    /* ═══════════════════════════════════════
+       FOOTER / CREDITS
+    ═══════════════════════════════════════ */
+    footer {
+      margin-top: 3.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-credit {
+      font-size: 0.8rem;
+      color: var(--text-xdim);
+      line-height: 1.7;
+    }
+
+    .footer-credit a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .footer-credit a:hover { text-decoration: underline; }
+
+    .footer-refs {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--text-xdim);
+      text-align: right;
+      line-height: 1.8;
+    }
+
+    /* ═══════════════════════════════════════
+       TOOLTIP helper text
+    ═══════════════════════════════════════ */
+    .field-hint {
+      font-size: 0.7rem;
+      color: var(--text-xdim);
+      margin-top: 0.25rem;
+      line-height: 1.4;
+    }
+
+    /* ═══════════════════════════════════════
+       ANIMATE results
+    ═══════════════════════════════════════ */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .result-section.animate {
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    /* ═══════════════════════════════════════
+       SCROLLBAR
+    ═══════════════════════════════════════ */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <!-- ════ HEADER ════ -->
+  <header>
+    <div class="breadcrumb">
+      <a href="https://yq-gui.github.io/">yq-gui.github.io</a>
+      &nbsp;/&nbsp;
+      <a href="https://yq-gui.github.io/tools/">tools</a>
+      &nbsp;/&nbsp; cosmology-calculator
+    </div>
+
+    <div class="header-top">
+      <div>
+        <h1>Cosmology Calculator</h1>
+        <p class="header-sub">
+          Compute distances, timescales, and universe contents from redshift <em>z</em>.
+          Parameters default to Planck 2018 (TT,TE,EE+lowE+lensing+BAO).
+        </p>
+      </div>
+      <div class="header-badge">v1.0 · Interactive</div>
+    </div>
+  </header>
+
+  <!-- ════ MAIN GRID ════ -->
+  <div class="main-grid">
+
+    <!-- ── INPUT PANEL ── -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-head-icon">⚙</span>
+        <h2>Parameters</h2>
+      </div>
+      <div class="panel-body">
+
+        <!-- Redshift input -->
+        <div class="field-group">
+          <div class="field-label">
+            <label>Redshift</label>
+            <span class="field-unit">z ≥ 0</span>
+          </div>
+          <input type="number" id="inp-z" class="input-z" value="1.0" min="0" max="1200" step="0.1" />
+          <p class="field-hint">z = 0 → today, z ≈ 1100 → CMB last scattering, z ≈ 20–30 → first stars</p>
+        </div>
+
+        <!-- Cosmo params -->
+        <div class="params-header">
+          <div class="param-divider" style="margin:0;flex:1">Cosmological Parameters</div>
+          <button class="reset-link" onclick="resetParams()" style="margin-left:0.8rem">↺ reset</button>
+        </div>
+
+        <br />
+
+        <div class="field-group">
+          <div class="field-label">
+            <label>H₀ — Hubble constant</label>
+            <span class="field-unit">km/s/Mpc</span>
+          </div>
+          <input type="number" id="inp-H0" value="67.66" min="50" max="100" step="0.1" />
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">
+            <label>Ω<sub>m</sub> — Matter density</label>
+            <span class="field-unit">dimensionless</span>
+          </div>
+          <input type="number" id="inp-Om" value="0.3111" min="0" max="1" step="0.001" />
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">
+            <label>Ω<sub>b</sub> — Baryon density</label>
+            <span class="field-unit">dimensionless</span>
+          </div>
+          <input type="number" id="inp-Ob" value="0.0490" min="0" max="0.2" step="0.0001" />
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">
+            <label>Ω<sub>Λ</sub> — Dark energy (Λ)</label>
+            <span class="field-unit">dimensionless</span>
+          </div>
+          <input type="number" id="inp-OL" value="0.6889" min="0" max="1" step="0.001" />
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">
+            <label>Ω<sub>r</sub> — Radiation density</label>
+            <span class="field-unit">dimensionless</span>
+          </div>
+          <input type="number" id="inp-Or" value="9.139e-5" min="0" max="0.01" step="1e-6" />
+          <p class="field-hint">Includes photons + 3 neutrino species at T<sub>CMB</sub> = 2.725 K</p>
+        </div>
+
+        <div id="error-msg" class="error-msg"></div>
+
+        <button class="btn-calc" onclick="calculate()">CALCULATE</button>
+      </div>
+    </div>
+
+    <!-- ── RESULTS PANEL ── -->
+    <div class="results-panel" id="results-panel">
+
+      <!-- Z indicator strip -->
+      <div class="z-strip" id="z-strip">
+        <div>
+          <div class="z-strip-label">Computing for</div>
+          <div class="z-strip-value" id="z-display">z = 1.0</div>
+        </div>
+        <div class="z-strip-epoch" id="epoch-display">—</div>
+      </div>
+
+      <!-- Time -->
+      <div class="result-section" id="sec-time">
+        <div class="result-section-head">
+          <span class="result-section-icon">⏱</span>
+          <h3>Time</h3>
+        </div>
+        <table class="result-table">
+          <tr>
+            <td>Age of universe at <em>z</em></td>
+            <td id="r-age"><span class="res-placeholder">—</span></td>
+          </tr>
+          <tr>
+            <td>Lookback time</td>
+            <td id="r-lookback"><span class="res-placeholder">—</span></td>
+          </tr>
+          <tr>
+            <td>Age of universe today (<em>z</em> = 0)</td>
+            <td id="r-age0"><span class="res-placeholder">—</span></td>
+          </tr>
+          <tr>
+            <td>Hubble time  (1/<em>H</em>₀)</td>
+            <td id="r-thubble"><span class="res-placeholder">—</span></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Expansion -->
+      <div class="result-section" id="sec-exp">
+        <div class="result-section-head">
+          <span class="result-section-icon">📡</span>
+          <h3>Hubble Expansion</h3>
+        </div>
+        <table class="result-table">
+          <tr>
+            <td>Hubble rate  <em>H</em> (<em>z</em>)</td>
+            <td id="r-Hz"><span class="res-placeholder">—</span></td>
+          </tr>
+          <tr>
+            <td><em>H</em> (<em>z</em>) / <em>H</em>₀</td>
+            <td id="r-EHz"><span class="res-placeholder">—</span></td>
+          </tr>
+          <tr>
+            <td>Deceleration parameter  <em>q</em> (<em>z</em>)</td>
+            <td id="r-q"><span class="res-placeholder">—</span></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Distances -->
+      <div class="result-section" id="sec-dist">
+        <div class="result-section-head">
+          <span class="result-section-icon">📐</span>
+          <h3>Distances</h3>
+        </div>
+        <table class="result-table">
+          <tr>
+            <td>Comoving distance  <em>D</em><sub>C</sub></td>
+            <td id="r-dc"><span class="res-placeholder">—</span></td>
+          </tr>
+          <tr>
+            <td>Angular diameter distance  <em>D</em><sub>A</sub></td>
+            <td id="r-da"><span class="res-placeholder">—</span></td>
+          </tr>
+          <tr>
+            <td>Luminosity distance  <em>D</em><sub>L</sub></td>
+            <td id="r-dl"><span class="res-placeholder">—</span></td>
+          </tr>
+          <tr>
+            <td>Distance modulus  <em>μ</em></td>
+            <td id="r-mu"><span class="res-placeholder">—</span></td>
+          </tr>
+          <tr>
+            <td>Angular size scale</td>
+            <td id="r-scale"><span class="res-placeholder">—</span></td>
+          </tr>
+          <!-- <tr>
+            <td>1 arcsec → physical size</td>
+            <td id="r-arcsec"><span class="res-placeholder">—</span></td>
+          </tr> -->
+        </table>
+      </div>
+
+      <!-- Contents -->
+      <div class="result-section" id="sec-cont">
+        <div class="result-section-head">
+          <span class="result-section-icon">🌐</span>
+          <h3>Contents of the Universe at <em>z</em></h3>
+        </div>
+        <table class="result-table">
+          <tr>
+            <td>Total matter  Ω<sub>m</sub>(z)</td>
+            <td id="r-Omz"><span class="res-placeholder">—</span></td>
+          </tr>
+          <tr>
+            <td>Baryons  Ω<sub>b</sub>(z)</td>
+            <td id="r-Obz"><span class="res-placeholder">—</span></td>
+          </tr>
+          <tr>
+            <td>Dark matter  Ω<sub>dm</sub>(z)</td>
+            <td id="r-Odm"><span class="res-placeholder">—</span></td>
+          </tr>
+          <tr>
+            <td>Radiation  Ω<sub>r</sub>(z)</td>
+            <td id="r-Orz"><span class="res-placeholder">—</span></td>
+          </tr>
+          <tr>
+            <td>Dark energy  Ω<sub>Λ</sub>(z)</td>
+            <td id="r-OLz"><span class="res-placeholder">—</span></td>
+          </tr>
+          <tr>
+            <td>Matter–radiation equality  <em>z</em><sub>eq</sub></td>
+            <td id="r-zeq"><span class="res-placeholder">—</span></td>
+          </tr>
+          <tr>
+            <td>Matter–Λ equality  <em>z</em><sub>Λ</sub></td>
+            <td id="r-zL"><span class="res-placeholder">—</span></td>
+          </tr>
+        </table>
+      </div>
+
+    </div><!-- /results-panel -->
+  </div><!-- /main-grid -->
+
+  <!-- ════ FOOTER ════ -->
+  <footer>
+    <div class="footer-credit">
+      Created by <a href="https://yq-gui.github.io/" target="_blank">Yueqin Gui</a>
+      &nbsp;·&nbsp;
+      <a href="https://yq-gui.github.io/tools/" target="_blank">← Back to Tools</a>
+      <br/>
+      Inspired by <a href="https://colossus.astro.umd.edu/" target="_blank" rel="noopener">Colossus</a>
+      and Ned Wright's Cosmology Calculator.
+      All computations performed client-side in your browser.
+    </div>
+    <div class="footer-refs">
+      Default parameters: Planck Collaboration (2020)<br/>
+      <em>A&amp;A</em> 641, A6 · arXiv:1807.06209<br/>
+      Flat ΛCDM · Ω<sub>k</sub> = 0
+    </div>
+  </footer>
+
+</div><!-- /page-wrap -->
+
+<!-- ════════════════════════════════════════════
+     COSMOLOGY ENGINE  (pure JS, no dependencies)
+════════════════════════════════════════════ -->
+<script>
+// ── Physical constants ──
+const C_KM_S   = 2.99792458e5;  // speed of light, km/s
+const MPC_TO_M = 3.085677581e22; // 1 Mpc in metres
+const YR_TO_S  = 3.1557600e7;   // 1 year in seconds
+const GYR_TO_S = YR_TO_S * 1e9;
+
+// ── Planck 2018 defaults ──
+const PLANCK2018 = {
+  H0: 67.66,
+  Om: 0.3111,
+  Ob: 0.0490,
+  OL: 0.6889,
+  Or: 9.139e-5
+};
+
+// ── Gaussian-Legendre quadrature nodes & weights (n=64) ──
+// Generated to cover [0,1] after variable substitution
+function gaussLegendre(n) {
+  // Returns {x, w} on [-1,1]
+  const x = new Float64Array(n);
+  const w = new Float64Array(n);
+  const m = Math.floor((n + 1) / 2);
+  for (let i = 0; i < m; i++) {
+    let xi = Math.cos(Math.PI * (i + 0.75) / (n + 0.5));
+    let dx;
+    do {
+      let p0 = 1, p1 = xi;
+      for (let j = 2; j <= n; j++) {
+        const p2 = ((2*j - 1)*xi*p1 - (j-1)*p0) / j;
+        p0 = p1; p1 = p2;
+      }
+      const dp = n * (p0 - xi*p1) / (1 - xi*xi);
+      dx = p1 / dp;
+      xi -= dx;
+    } while (Math.abs(dx) > 1e-15);
+    x[i] = -xi; x[n-1-i] = xi;
+    const p0p = 1, p1p = xi;
+    let pp = 1, pm = xi;
+    for (let j = 2; j <= n; j++) {
+      const p2 = ((2*j - 1)*xi*pm - (j-1)*pp) / j;
+      pp = pm; pm = p2;
+    }
+    const dpw = n * (pp - xi*pm) / (1 - xi*xi);
+    w[i] = w[n-1-i] = 2 / ((1 - xi*xi) * dpw * dpw);
+  }
+  return {x, w};
+}
+
+const GL64 = gaussLegendre(64);
+
+// ── Numerical integration: ∫_a^b f(x) dx via G-L ──
+function integrate(f, a, b) {
+  const {x, w} = GL64;
+  const mid = 0.5*(a + b), half = 0.5*(b - a);
+  let s = 0;
+  for (let i = 0; i < x.length; i++) s += w[i] * f(mid + half*x[i]);
+  return half * s;
+}
+
+// ── E(z) = H(z)/H0 ──
+function E(z, Om, OL, Or, Ok) {
+  const zp1 = 1 + z;
+  return Math.sqrt(Math.max(0,
+    Om * zp1**3 + Or * zp1**4 + OL + Ok * zp1**2
+  ));
+}
+
+// ── Comoving distance: D_C = c/H0 * ∫_0^z dz'/E(z') ──
+function comovingDistance(z, H0, Om, OL, Or, Ok) {
+  if (z <= 0) return 0;
+  const integral = integrate(zp => 1 / E(zp, Om, OL, Or, Ok), 0, z);
+  return (C_KM_S / H0) * integral; // Mpc
+}
+
+// ── Lookback time: t_L = (1/H0) * ∫_0^z dz'/((1+z')*E(z')) ──
+// Result in Gyr
+function lookbackTime(z, H0, Om, OL, Or, Ok) {
+  if (z <= 0) return 0;
+  const H0_per_s = H0 * 1e3 / MPC_TO_M; // H0 in s^-1
+  const integral = integrate(zp => 1 / ((1 + zp) * E(zp, Om, OL, Or, Ok)), 0, z);
+  return integral / (H0_per_s * GYR_TO_S); // Gyr
+}
+
+// ── Age at z: ∫_z^∞ dz'/((1+z')*E(z')) ──
+// We integrate to a large finite upper limit (z_max = 1e6)
+function ageAtZ(z, H0, Om, OL, Or, Ok) {
+  const H0_per_s = H0 * 1e3 / MPC_TO_M;
+  const zmax = 1e5;
+  // Use substitution u = 1/(1+z') to handle the upper limit
+  // dz' = -du/u^2, 1+z' = 1/u
+  // ∫_z^zmax = ∫_{1/(1+zmax)}^{1/(1+z)} du / (E(1/u-1, ...) * u)
+  const u_lo = 1/(1+zmax);
+  const u_hi = 1/(1+z > 0 ? 1+z : 1+1e-10);
+  const integrand = u => {
+    const zp = 1/u - 1;
+    const e  = E(zp, Om, OL, Or, Ok);
+    return e > 1e-30 ? 1/(e * u) : 0;
+  };
+  const integral = integrate(integrand, u_lo, u_hi);
+  return integral / (H0_per_s * GYR_TO_S);
+}
+
+// ── Density parameters at z ──
+function densitiesAtZ(z, Om, OL, Or, Ok) {
+  const E2 = E(z, Om, OL, Or, Ok)**2;
+  const zp1 = 1+z;
+  return {
+    Omz: Om  * zp1**3 / E2,
+    Orz: Or  * zp1**4 / E2,
+    OLz: OL           / E2,
+    Okz: Ok  * zp1**2 / E2,
+  };
+}
+
+// ── Deceleration parameter q(z) ──
+// q = -1 + (1+z)/E * dE/dz
+// dE/dz via finite difference
+function deceleration(z, Om, OL, Or, Ok) {
+  const h = 1e-4;
+  const Ez = E(z, Om, OL, Or, Ok);
+  const dEdz = (E(z+h, Om, OL, Or, Ok) - E(z-h, Om, OL, Or, Ok)) / (2*h);
+  return -1 + (1+z)*dEdz/Ez;
+}
+
+// ── Matter–radiation equality ──
+function zEquality(Om, Or) {
+  return Om/Or - 1; // exact for flat ΛCDM
+}
+
+// ── Matter–Λ equality ──
+function zLambda(Om, OL) {
+  return (OL/Om)**(1/3) - 1;
+}
+
+// ── Format helpers ──
+function fmtTime(t) {
+  // t in Gyr
+  if (Math.abs(t) < 0.001) return `${(t*1e6).toPrecision(4)} kyr`;
+  if (Math.abs(t) < 1)     return `${(t*1e3).toPrecision(4)} Myr`;
+  return `${t.toPrecision(5)} Gyr`;
+}
+
+function fmtDist(d) {
+  // d in Mpc
+  if (d < 1)     return `${(d*1e3).toPrecision(4)} kpc`;
+  if (d < 1e3)   return `${d.toPrecision(5)} Mpc`;
+  return `${(d/1e3).toPrecision(5)} Gpc`;
+}
+
+function fmtNum(x, sig=5) {
+  if (x === null || isNaN(x)) return '—';
+  return x.toPrecision(sig);
+}
+
+function setResult(id, val, unit='') {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = `${val}<span class="res-unit">${unit}</span>`;
+}
+
+// ── Epoch name ──
+function epochName(z) {
+  if (z < 0.001) return 'Today (local universe)';
+  if (z < 0.5)   return 'Low-z universe';
+  if (z < 1.5)   return 'Peak cosmic star formation';
+  if (z < 3)     return 'Quasar epoch';
+  if (z < 6)     return 'Reionization era';
+  if (z < 20)    return 'End of reionization / first galaxies';
+  if (z < 200)   return 'Cosmic Dark Ages';
+  if (z < 1200)  return 'Pre-recombination era';
+  return 'Before CMB last scattering';
+}
+
+// ══════════════════════════════════
+//  MAIN CALCULATE FUNCTION
+// ══════════════════════════════════
+function calculate() {
+  const errEl = document.getElementById('error-msg');
+  errEl.style.display = 'none';
+
+  // -- Read inputs --
+  const z  = parseFloat(document.getElementById('inp-z').value);
+  const H0 = parseFloat(document.getElementById('inp-H0').value);
+  const Om = parseFloat(document.getElementById('inp-Om').value);
+  const Ob = parseFloat(document.getElementById('inp-Ob').value);
+  const OL = parseFloat(document.getElementById('inp-OL').value);
+  const Or = parseFloat(document.getElementById('inp-Or').value);
+
+  // -- Validate --
+  if (isNaN(z) || z < 0) { showErr('Redshift z must be ≥ 0.'); return; }
+  if (isNaN(H0) || H0 <= 0) { showErr('H₀ must be positive.'); return; }
+  if (isNaN(Om) || Om < 0)  { showErr('Ωm must be ≥ 0.'); return; }
+  if (isNaN(OL) || OL < 0)  { showErr('ΩΛ must be ≥ 0.'); return; }
+  if (isNaN(Or) || Or < 0)  { showErr('Ωr must be ≥ 0.'); return; }
+  if (z > 1200) { showErr('Calculator is calibrated for z ≤ 1200 (before last scattering).'); return; }
+
+  const Ok = 1 - Om - OL - Or; // curvature
+
+  // -- Z indicator --
+  document.getElementById('z-display').textContent = `z = ${z}`;
+  document.getElementById('epoch-display').textContent = epochName(z);
+
+  // ── Times ──
+  const t_L   = lookbackTime(z, H0, Om, OL, Or, Ok);
+  const t_age = ageAtZ(z, H0, Om, OL, Or, Ok);
+  const t_age0= ageAtZ(0, H0, Om, OL, Or, Ok);  // age today
+  const H0_s  = H0 * 1e3 / MPC_TO_M;
+  const t_Hub = 1/(H0_s * GYR_TO_S);
+
+  setResult('r-age',     fmtTime(t_age));
+  setResult('r-lookback',fmtTime(t_L));
+  setResult('r-age0',    fmtTime(t_age0));
+  setResult('r-thubble', fmtTime(t_Hub));
+
+  // ── Expansion ──
+  const Hz  = H0 * E(z, Om, OL, Or, Ok);
+  const EHz = E(z, Om, OL, Or, Ok);
+  const q   = deceleration(z, Om, OL, Or, Ok);
+
+  setResult('r-Hz',  `${Hz.toFixed(2)} km/s/Mpc`);
+  setResult('r-EHz', fmtNum(EHz));
+  setResult('r-q',   fmtNum(q, 4));
+
+  // ── Distances ──
+  const Dc = comovingDistance(z, H0, Om, OL, Or, Ok); // Mpc
+
+  // Transverse comoving distance (flat: D_M = D_C)
+  let DM = Dc;
+  if (Math.abs(Ok) > 1e-8) {
+    const DH = C_KM_S / H0;
+    if (Ok > 0) DM = DH/Math.sqrt(Ok) * Math.sinh(Math.sqrt(Ok)*Dc/DH);
+    else        DM = DH/Math.sqrt(-Ok)* Math.sin(Math.sqrt(-Ok)*Dc/DH);
+  }
+
+  const DA = DM / (1+z);   // angular diameter distance
+  const DL = DM * (1+z);   // luminosity distance
+  const mu = 5*Math.log10(DL*1e6/10); // distance modulus (DL in pc)
+  // Scale: kpc per arcsec (physical)
+  const kpc_per_arcsec = DA * 1e3 * (Math.PI/180/3600); // D_A in Mpc → kpc; 1 arcsec in rad
+  const phys_per_arcsec_kpc = DA * 1e3 * (Math.PI/180/3600); // kpc
+
+  setResult('r-dc',    fmtDist(Dc));
+  setResult('r-da',    fmtDist(DA));
+  setResult('r-dl',    fmtDist(DL));
+  setResult('r-mu',    isFinite(mu) ? `${mu.toFixed(3)} mag` : '—');
+  setResult('r-scale', `${kpc_per_arcsec.toPrecision(4)} kpc/arcsec`);
+  setResult('r-arcsec',`${phys_per_arcsec_kpc.toPrecision(4)} kpc`);
+
+  // ── Contents at z ──
+  const dens = densitiesAtZ(z, Om, OL, Or, Ok);
+  const Omz  = dens.Omz;
+  const Obz  = Ob * (1+z)**3 / E(z,Om,OL,Or,Ok)**2;
+  const Odm  = Omz - Obz;
+
+  setResult('r-Omz', fmtNum(Omz));
+  setResult('r-Obz', fmtNum(Obz));
+  setResult('r-Odm', fmtNum(Math.max(0,Odm)));
+  setResult('r-Orz', fmtNum(dens.Orz));
+  setResult('r-OLz', fmtNum(dens.OLz));
+
+  const zeq = zEquality(Om, Or);
+  const zla = zLambda(Om, OL);
+  setResult('r-zeq', zeq > 0 ? zeq.toFixed(0) : '—');
+  setResult('r-zL',  zla > 0 ? zla.toFixed(3) : '—');
+
+  // Animate
+  document.querySelectorAll('.result-section').forEach((s, i) => {
+    s.classList.remove('animate');
+    setTimeout(() => s.classList.add('animate'), i * 40);
+  });
+}
+
+function showErr(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = '⚠ ' + msg;
+  el.style.display = 'block';
+}
+
+function resetParams() {
+  document.getElementById('inp-H0').value = PLANCK2018.H0;
+  document.getElementById('inp-Om').value  = PLANCK2018.Om;
+  document.getElementById('inp-Ob').value  = PLANCK2018.Ob;
+  document.getElementById('inp-OL').value  = PLANCK2018.OL;
+  document.getElementById('inp-Or').value  = PLANCK2018.Or;
+}
+
+// Run on load with defaults
+window.addEventListener('DOMContentLoaded', calculate);
+
+// Also recalculate on Enter key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') calculate();
+});
+</script>
+
+</body>
+</html>

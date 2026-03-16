@@ -24,15 +24,15 @@ author:
   avatar           : "profile.png"
   name             : "Yuqian Gui"
   pronouns         : # example: "she/her"  
-  bio              : "Practice makes perfect."
+  bio              : "" #Practice makes perfect.
   location         : "Beijing, China"
   employer         : "Tsinghua University"
   uri              : # URL
   email            : "guiyq.thu@gmail.com" 
 
   # Academic websites
-  arxiv            : # URL - Update with the correct link to your profile
-  googlescholar    : #"https://scholar.google.com/citations?user=PS_CX0AAAAAJ"
+  arxiv            : "https://arxiv.org/a/0009-0007-9365-9806" # URL - Update with the correct link to your profile
+  googlescholar    : "https://scholar.google.com/citations?user=8LAEMdkAAAAJ" #"https://scholar.google.com/citations?user=PS_CX0AAAAAJ"
   impactstory      : # URL
   orcid            : "https://orcid.org/0009-0007-9365-9806"
   semantic         : # URL
