@@ -11,6 +11,11 @@ author_profile: true
 
 {% include base_path %}
 
-{% for post in site.publications reversed %}
-  {% include archive-single.html %}
-{% endfor %}
+{% assign publications = site.publications | sort: 'date' | reverse %}
+<ul class="publications-list">
+  {% for post in publications %}
+    <li class="publications-list__item">
+      {% include archive-single.html %}
+    </li>
+  {% endfor %}
+</ul>

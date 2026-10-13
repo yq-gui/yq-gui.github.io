@@ -89,6 +89,43 @@
    List view
    ========================================================================== */
 
+.publications-list {
+  margin-top: 2em;
+  padding-left: 1.5em;
+  list-style-type: disc;
+
+  > .publications-list__item {
+    padding-left: 0.5em;
+    margin-bottom: 2em;
+    padding-bottom: 2em;
+    border-bottom: 1px solid $border-color;
+
+    &::marker {
+      color: $link-color;
+      font-size: 1.4em;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+  }
+
+  .archive__item-title {
+    margin-top: 0;
+    margin-bottom: 0.6em;
+  }
+
+  .archive__item > p {
+    margin-bottom: 0.75em;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
 .list__item {
   @include breakpoint($medium) {
     padding-right: $right-sidebar-width-narrow;
