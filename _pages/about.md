@@ -8,23 +8,23 @@ redirect_from:
 ---
 
 
-Hi there! I am Yuqian Gui (桂雨谦), currently a first-year PhD student in the [Department of Astronomy](https://astro.tsinghua.edu.cn) at [Tsinghua University](https://www.tsinghua.edu.cn). I received my B.S. in Physics in [Zhili College](https://www.zlc.tsinghua.edu.cn/), Tsinghua University in June, 2024.
+Hi there! I am Yuqian Gui (桂雨谦), currently a 3rd-year PhD student in the [Department of Astronomy](https://astro.tsinghua.edu.cn) at [Tsinghua University](https://www.tsinghua.edu.cn). I received my B.S. in Physics from [Zhili College](https://www.zlc.tsinghua.edu.cn/), Tsinghua University, in June 2024.
 
-My current research interest is how does the **evolution of galaxies** associated with **their merger histories and large-scale structure environments**.
+My current research focuses on how the **evolution of galaxies** relates to **their merger histories and large-scale environments**.
 
-My recent research is about different evolutionary tracks of different galaixes in view of the angular momentum of CGM around them. Specifically, under the guidence of [Prof. Dandan Xu](http://i.astro.tsinghua.edu.cn/~dxu/), I am working on understanding episodic star formation histories of star-forming galaxies, and trying to explain the origin of the scatter in star foramtion main sequence with their evolutionary stages. This work is based on [IllustrisTNG](https://www.tng-project.org) simulation.
+My recent work explores how the angular momentum of the circumgalactic medium (CGM) relates to the diverse evolutionary paths of galaxies. Under the supervision of [Prof. Dandan Xu](http://i.astro.tsinghua.edu.cn/~dxu/), I study the episodic star formation histories of star-forming galaxies and investigate whether differences in their evolutionary stages can explain the scatter in the star formation main sequence. This work uses the [IllustrisTNG](https://www.tng-project.org) simulations.
 
-Before focusing on the wonderful mysteries of galaxies, my primary work is about statistical analyses of microlensing planets using [KMTNet](https://kmtnet.kasi.re.kr/kmtnet-eng/) data, supervised by [Prof. Shude Mao](http://i.astro.tsinghua.edu.cn/~smao/). We use [KMTNet telescope](https://kmtnet.kasi.re.kr/kmtnet-eng/) to find the microlensing planets. This method is first proposed by Prof. Shude Mao and his supervisor in 1991 ([Paper link](https://ui.adsabs.harvard.edu/abs/1991ApJ...374L..37M/abstract)). We worked in “Mass-Production for KMTNet AnomalyFinder Planets” project which analyzes 2016-2019 microlensing events. I have finished the analysis of half of the 2017 events and published a paper. You can check [Publications](https://yq-gui.github.io/publications/) to get the details.
+Before turning to galaxy evolution, I worked on statistical analyses of planets detected through gravitational microlensing using [KMTNet](https://kmtnet.kasi.re.kr/kmtnet-eng/) data, under the supervision of [Prof. Shude Mao](http://i.astro.tsinghua.edu.cn/~smao/). We used the KMTNet telescopes to search for planets through microlensing, a method proposed by Prof. Shude Mao and his supervisor in 1991 ([paper link](https://ui.adsabs.harvard.edu/abs/1991ApJ...374L..37M/abstract)). As part of the “Mass-Production for KMTNet AnomalyFinder Planets” project, which analyzes microlensing events from 2016–2019, I completed the analysis of half of the 2017 events and published a paper. See my [Publications](https://yq-gui.github.io/publications/) page for details.
 
-Besides, I am also curious about machine learning and AI for science. I believe they can really help us better understand our universe and the physics we don't know! I am not quite familiar with them now, but will try my best to keep studying.
+I am also interested in machine learning and AI for science. I believe these tools can help us better understand the universe and explore new physics. I am still learning about them and look forward to developing my knowledge and skills.
 
 Hobbies and Personal Life
 ------
 <!-- ====== -->
-* I enjoy photography and music, and quite like singing songs.
-* **Running and swimming** are two of my main ways to exercise and keep healthy.
-* I'm **very glad** to meet and chat with everyone around me.
+* I enjoy photography and music, especially singing.
+* **Running and swimming** are two of my favorite ways to stay active and healthy.
+* I **always enjoy** meeting new people and chatting with those around me.
 
 For more info
 ------
-If you want more information about me, you can find [my CV here](/files/Personal_CV_gyq.pdf).
+For more information about my background and experience, please see [my CV](/files/Personal_CV_gyq.pdf).
